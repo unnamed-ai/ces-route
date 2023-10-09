@@ -1,0 +1,315 @@
+<template>
+  <main>
+    <div class="left-side">
+      <LeafletMap />
+    </div>
+    <div class="right-side data" v-if="$route.params.slug">
+      <div class="head">
+        <div class="back">
+          <i class="fa-solid fa-chevron-left" @click="goTo(prevPlace.slug)" v-if="prevPlace != null"></i>
+        </div>
+        <div class="place">
+          <div class="title">{{place.name}}</div>
+          <div class="cord">{{place.lat }} | {{ place.lng }}</div>
+        </div>
+        <div class="next">
+          <i class="fa-solid fa-chevron-right" @click="goTo(nextPlace.slug)" v-if="nextPlace != null"></i>
+        </div>
+      </div>
+      <div class="main-body">
+        <div class="information section">
+          <div class="title">Información</div>
+          <div class="body">
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+            <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?</p>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+            <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?</p>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+            <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?</p>
+          </div>
+        </div>
+        <div class="gallery section">
+          <div class="title">Galeria de Imagenes</div>
+          <div class="body">
+            <button @click="toggler = !toggler">
+              Open the lightbox.
+            </button>
+            <FsLightbox
+              :toggler="toggler"
+              :sources="[
+                'https://i.imgur.com/fsyrScY.jpg',
+                'https://www.youtube.com/watch?v=3nQNiWdeH2Q',
+                'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'
+              ]"
+            />
+          </div>
+        </div>
+        <div class="videos section">
+          <div class="title">Videos</div>
+          <div class="body"></div>
+        </div>
+        <div class="audios section">
+          <div class="title">Audio</div>
+          <div class="body"></div>
+        </div>
+      </div>
+      
+    </div>
+    <div class="right-side no-slug" v-else>
+      <div class="body">
+        <div class="title">Selecciona un lugar</div>
+        <div class="description">Para ver su información</div>
+      </div>
+    </div>
+  </main>
+</template>
+
+<script>
+
+import LeafletMap from '../components/LeafletMap.vue';
+
+import { ref } from 'vue';
+import { storeToRefs } from 'pinia'
+import { useDataStore } from '@/stores/data';
+import { useRoute } from 'vue-router';
+import FsLightbox from "fslightbox-vue/v3";
+
+export default {
+  name: 'MainView',
+  components: {
+    LeafletMap,
+    FsLightbox
+  },
+  props: {
+    slug: {
+      type: String,
+      default: '',
+    },
+  },
+  setup(props, { params }) {
+    const dataStore = useDataStore();
+    const { data } = storeToRefs(dataStore);
+
+    const route = useRoute();
+    const slug = ref(route.params.slug)
+    let place = ref({});
+    let prevPlace = ref({});
+    let nextPlace = ref({});
+
+    place.value = data.value.find((place) => place.slug === slug.value);
+    let index = data.value.findIndex((element) => element.slug === slug.value);
+
+    let prevIndex = index - 1;
+    let nextIndex = index + 1;
+
+    prevPlace.value = prevIndex >= 0 ? data.value[prevIndex] : null;
+    nextPlace.value = nextIndex < data.value.length ? data.value[nextIndex] : null;
+
+   
+    return {
+      place,
+      prevPlace,
+      nextPlace,
+      data
+    }
+  },
+  data() {
+    return {
+      toggler: false,
+      images: [
+        {
+          src: 'https://via.placeholder.com/800x600.png?text=Image+1',
+          thumbnail: 'https://via.placeholder.com/200x150.png?text=Image+1',
+        },
+        {
+          src: 'https://via.placeholder.com/800x600.png?text=Image+2',
+          thumbnail: 'https://via.placeholder.com/200x150.png?text=Image+2',
+        },
+        {
+          src: 'https://via.placeholder.com/800x600.png?text=Image+3',
+          thumbnail: 'https://via.placeholder.com/200x150.png?text=Image+3',
+        },
+      ],
+    };
+  },
+  created() {
+    console.log(this.$route.params.slug)
+    this.$watch('$route.params.slug', (slug) => {
+      this.place = this.data.find((place) => place.slug === slug);
+      let index = this.data.findIndex((element) => element.slug === slug);
+
+      let prevIndex = index - 1;
+      let nextIndex = index + 1;
+
+      this.prevPlace = prevIndex >= 0 ? this.data[prevIndex] : null;
+      this.nextPlace = nextIndex < this.data.length ? this.data[nextIndex] : null;
+
+      document.title = "Mapa de la Memoria | "+this.place.name;
+
+    });
+  },
+  methods: {
+    goTo(slug) {
+      this.$router.push(slug);
+    }
+  },
+  mounted() {
+    document.title = "Mapa de la Memoria | "+this.place.name;
+  },
+}
+
+</script>
+
+<style>
+
+main {
+  display: flex; 
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  height: calc(100vh - 55px);
+  width: 100vw;
+}
+
+.left-side {
+  height: 100%;
+  width: calc(45%);
+}
+.right-side {
+  height: 100%;
+  width: calc(55%);
+}
+
+.no-slug{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.no-slug .body{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.no-slug .body .title{
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.no-slug .body .description{
+  font-size: 18px;
+  font-weight: normal;
+}
+
+.data{
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.data .head{
+  width: 100%;
+  height: 72px;
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 20px;
+  background-color: var(--color-2);
+  color: white;
+}
+
+.data .main-body{
+  width: 100%;
+  height: calc(100% - 72px);
+  overflow-y: scroll;
+  padding: 10px 20px;
+}
+
+.data .head .back{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50px;
+  cursor: pointer;
+  width: 30px;
+}
+
+.data .head .next{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50px;
+  cursor: pointer;
+  width: 30px;
+}
+
+.data .head .next:hover{
+  color: rgba(255, 255, 255, 0.1);
+}
+
+.data .head .back:hover{
+  color: rgba(255, 255, 255, 0.1);
+}
+
+.data .head .place{
+  overflow: hidden;
+  white-space: nowrap;
+  width: calc(100% - 60px);
+}
+
+.data .head .place .title{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  font-size: 24px;
+}
+
+.data .head .place .cord{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  font-size: 12px;
+  font-family: monospace;
+}
+
+.data .head i{
+  font-size: 24px;
+}
+
+.data .section{
+  width: 100%;
+  padding: 10px 20px;
+  background-color: #fefefe;
+}
+
+.data .section .title{
+  font-size: 18px;
+  font-weight: 500;
+  margin-bottom: 10px;
+}
+
+
+@media (max-width: 768px){
+  main{
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    height: calc(100vh - 55px);
+  }
+  .left-side {
+    height: calc(30%) !important;
+    width: 100vw;
+  }
+  .right-side {
+    height: calc(70%) !important;
+    width: 100vw;
+  }
+}
+
+
+
+</style>
