@@ -17,6 +17,10 @@
         </div>
       </div>
       <div class="main-body">
+        <div v-for="(element, index) in place.sections" class="section">
+          <div class="title">{{ element.title  }}</div>
+          <div class="body" v-html="element.html"></div>
+        </div>
         <div class="information section">
           <div class="title">Información</div>
           <div class="body">
@@ -73,6 +77,7 @@ import { storeToRefs } from 'pinia'
 import { useDataStore } from '@/stores/data';
 import { useRoute } from 'vue-router';
 import FsLightbox from "fslightbox-vue/v3";
+import axios from 'axios';
 
 export default {
   name: 'MainView',
@@ -89,6 +94,7 @@ export default {
   setup(props, { params }) {
     const dataStore = useDataStore();
     const { data } = storeToRefs(dataStore);
+    const { updateData } = dataStore;
 
     const route = useRoute();
     const slug = ref(route.params.slug)
@@ -110,7 +116,8 @@ export default {
       place,
       prevPlace,
       nextPlace,
-      data
+      data,
+      updateData
     }
   },
   data() {
@@ -154,7 +161,13 @@ export default {
     }
   },
   mounted() {
-    document.title = "Mapa de la Memoria | "+this.place.name;
+    axios.get('http://localhost/ces-route/api/places.php')
+    .then(response => {
+      this.updateData(response.data);
+    })
+    .catch(error => {
+      console.log(error);
+    });
   },
 }
 

@@ -35,6 +35,15 @@
         let place = this.data.find((place) => place.slug === slug);
         this.map.panTo(new L.LatLng(place.lat, place.lng));
       });
+      this.$watch('data', (data) => {
+        for(let i=0; i < this.data.length; i++){
+          let marker = new L.marker([this.data[i].lat, this.data[i].lng])        
+          marker.addTo(this.map); 
+          marker.on('click', () => {
+            this.goTo(this.data[i].slug);
+          });
+        }
+      });
     },
     mounted() {
       this.map = L.map("mapContainer").setView([-38.7404074,-72.6253507], 13);
