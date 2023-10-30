@@ -57,7 +57,6 @@
           <div class="body"></div>
         </div>
       </div>
-      
     </div>
     <div class="right-side no-slug" v-else>
       <div class="body">
