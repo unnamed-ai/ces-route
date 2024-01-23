@@ -4,7 +4,7 @@
       <LeafletMap />
     </div>
     <div class="right-side data" v-if="$route.params.slug" :class="{'expanded': expanded}">
-      <div class="expand" @click="expand()"><i class="fa-solid" :class="{'fa-chevron-up': expanded, 'fa-chevron-down': !expanded}"></i></div>
+      <div class="expand" @click="expand()"></div>
       <div class="head">
         <div class="back">
           <i class="fa-solid fa-chevron-left" @click="goTo(prevPlace?.slug)" v-if="prevPlace != null"></i>
@@ -22,35 +22,66 @@
           <div class="title">{{ element.title  }}</div>
           <div class="body" v-html="element.html"></div>
         </div>
-        <div class="gallery section" v-if="place.slug == 'aliwen-cementerio'">
-          <div class="title"></div>
+        <div class="information section">
+          <div class="title">Información</div>
           <div class="body">
-            <img src="https://ruta.cesuct.cl/images/aliwen.jpg" class="imgthumb"/>
-            <p>Ilustración paisaje Aliwen desde la memoria</p>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+            <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?</p>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+            <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?</p>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+            <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?</p>
           </div>
+        </div>
+        <div class="gallery section">
+          <div class="title">Galeria de Imagenes</div>
           <div class="body">
-            <img src="https://ruta.cesuct.cl/images/video-aliwen.jpg" class="imgthumb" @click="toggler = !toggler"/>
-            <p>¿Cómo se construyeron las esculturas Aliwen y Menoko Tromen? - FONDEF ID21I10279</p>
+            <button @click="toggler = !toggler">
+              Open the lightbox.
+            </button>
             <FsLightbox
               :toggler="toggler"
               :sources="[
-                'https://www.youtube.com/watch?v=d-u-LwTHyec&ab_channel=CENTRODEESTUDIOSOCIOCULTURALESUCTEMUCO',
+                'https://i.imgur.com/fsyrScY.jpg',
+                'https://www.youtube.com/watch?v=3nQNiWdeH2Q',
+                'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'
               ]"
             />
           </div>
+        </div>
+        <div class="videos section">
+          <div class="title">Videos</div>
+          <div class="body"></div>
+        </div>
+        <div class="audios section">
+          <div class="title">Audio</div>
+          <div class="body"></div>
         </div>
       </div>
     </div>
     <div class="right-side no-slug" v-else>
       <div class="expand" @click="expand()"></div>
       <div class="body">
-        <div class="place-list">
-          <h4>Lugares</h4>
-          <div class="place" v-for="p in data">
-            <RouterLink :to="'/'+p.slug" class="title" :key="p.slug" @click="goTo(p.slug)">
-            {{ p.name }}
-            </RouterLink>
+        <div class="title">Selecciona un lugar</div>
+        <div class="description">Para ver su información</div>
+        <div class="audios">
+          <div>
+            <p>Reproducir en Español</p>
+            <audio controls="">
+              <source src="https://www.w3schools.com/html/horse.ogg" type="audio/ogg">
+              <source src="https://www.w3schools.com/html/horse.mp3" type="audio/mpeg">
+              Your browser does not support the audio element.
+            </audio>
           </div>
+          <div>
+            <p>Reproducir en Mapuzungun</p>
+            <audio>
+              <source src="https://www.w3schools.com/html/horse.ogg" type="audio/ogg">
+              <source src="https://www.w3schools.com/html/horse.mp3" type="audio/mpeg">
+              Your browser does not support the audio element.
+            </audio>
+          </div>
+          
         </div>
       </div>
     </div>
@@ -118,14 +149,12 @@ export default {
       nextPlace,
       data,
       expanded,
-      updateData,
-      slug
+      updateData
     }
   },
   data() {
     return {
       toggler: false,
-      toggler2: false,
       images: [
         {
           src: 'https://via.placeholder.com/800x600.png?text=Image+1',
@@ -186,6 +215,13 @@ export default {
   },
   mounted() {
     document.addEventListener('keydown', this.keyPress);
+    axios.get('https://admin.ruta.cesuct.cl/api/places.php')
+    .then(response => {
+      this.updateData(response.data);
+    })
+    .catch(error => {
+      console.log(error);
+    });
   },
 }
 
@@ -223,21 +259,6 @@ main {
 
 .right-side .expand{
   display: none;
-}
-
-.right-side .place-list{
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-
-.right-side .place-list .place {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 50px;
-  cursor: pointer;
-  border-bottom: 1px solid #eaeaea;
 }
 
 .no-slug{
@@ -377,14 +398,10 @@ main {
     width: 100%;
   }
   .right-side .expand{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: white;
+    display: block;
     width: 100%;
     height: 40px;
-    background-color: #2a2a2a;
-    cursor: pointer;
+    background-color: red;
   }
 }
 
