@@ -10,16 +10,14 @@
     
   </template>
   
-  <script>
+<script>
   import "leaflet/dist/leaflet.css";
   import L from "leaflet";
   import "../../public/Tween.js";
   import "../../public/leaflet.curve.js";
 
-  import { ref } from 'vue';
   import { storeToRefs } from 'pinia'
   import { useDataStore } from '@/stores/data';
-import { routerKey } from "vue-router";
 
   export default {
     name: "LeafletMap",
@@ -75,7 +73,6 @@ import { routerKey } from "vue-router";
             this.goTo(this.data[i].slug);
           });
         }
-        console.log(data);
         let place = this.data.find((place) => place.slug === this.slug);
         this.map.flyTo(new L.LatLng(place.lat, place.lng), 18);
       });
@@ -118,27 +115,12 @@ import { routerKey } from "vue-router";
     },
     mounted() {
       console.log('slug mounted:;::', this.$route.params.slug)
+      
       this.map = L.map("mapContainer").setView([-38.7404074,-72.6253507], 13);
      
       L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
         attribution: 'Tiles &copy; Esri &mdash; Source: Esri...'
       }).addTo(this.map);
-      
-      
-      
-      /*L.tileLayer("http://{s}.tile.osm.org/{z}/{x}/{y}.png", {
-        attribution:
-          '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
-      }).addTo(this.map);*/
-      //use a mix of renderers
-      
-
-      /*
-      var customPane = this.map.createPane("customPane");
-      var canvasRenderer = L.canvas({ pane: "customPane" });
-      customPane.style.zIndex = 399;
-
-      */ 
 
       const mapDiv = document.getElementById("mapContainer");
 
@@ -157,9 +139,6 @@ import { routerKey } from "vue-router";
           iconUrl: 'https://ruta.cesuct.cl/extra/marker.png'
       })
 
-      if(this.$route.params.slug === ''){
-        return;
-      }
 
       for(let i=0; i < this.data.length; i++){
         let marker = new L.marker([this.data[i].lat, this.data[i].lng], {icon: greenIcon})
@@ -172,8 +151,12 @@ import { routerKey } from "vue-router";
       }
 
       let slug = this.$route.params.slug;
-      let place = this.data.find((place) => place.slug === slug);
-      this.map.flyTo(new L.LatLng(place.lat, place.lng), 18);
+
+      if(slug !== ''){
+        let place = this.data.find((place) => place.slug === slug);
+        console.log(place);
+        this.map.flyTo(new L.LatLng(place.lat, place.lng), 18);
+      }
       
       
     },

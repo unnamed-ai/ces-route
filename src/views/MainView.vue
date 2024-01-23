@@ -3,7 +3,7 @@
     <div class="left-side" :class="{'expanded': expanded}">
       <LeafletMap />
     </div>
-    <div class="right-side data" v-if="$route.params.slug" :class="{'expanded': expanded}">
+    <div class="right-side data" v-if="place" :class="{'expanded': expanded}">
       <div class="expand" @click="expand()"><i class="fa-solid" :class="{'fa-chevron-up': expanded, 'fa-chevron-down': !expanded}"></i></div>
       <div class="head">
         <div class="back">
@@ -21,6 +21,59 @@
         <div v-for="(element, index) in place?.sections" class="section">
           <div class="title">{{ element.title  }}</div>
           <div class="body" v-html="element.html"></div>
+        </div>
+        <div class="gallery section">
+          <section id="lightboxes">
+            <div class="container">
+              <div class="row">
+                <div class="col-12">
+                  <h2 class="display-4 my-4 text-uppercase">Lightbox images & videos</h2>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-3">
+                  <div class="image-wrap mb-4">
+                    <a href="https://picsum.photos/400" class="glightbox" data-title="My title" data-description="description here" data-desc-position="right" data-type="image" data-effect="fade"><img src="https://picsum.photos/400" alt="" class="img-fluid"></a>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="image-wrap mb-4">
+                    <a href="https://picsum.photos/401" class="glightbox" data-title="My title" data-description="description here" data-desc-position="right" data-type="image" data-effect="fade"><img src="https://picsum.photos/401" alt="" class="img-fluid"></a>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="image-wrap mb-4">
+                    <a href="https://biati-digital.github.io/glightbox/demo/pexels-video-1550080.mp4" class="glightbox" data-title="My title" data-description="description here" data-type="video" data-effect="fade"><img src="https://picsum.photos/402" alt="" class="img-fluid"></a>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="image-wrap mb-4">
+                    <a href="https://picsum.photos/403" class="glightbox" data-title="My title" data-description="description here" data-desc-position="right" data-type="image" data-effect="fade"><img src="https://picsum.photos/403" alt="" class="img-fluid"></a>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="image-wrap mb-4">
+                    <a href="https://picsum.photos/399" class="glightbox" data-title="My title" data-description="description here" data-desc-position="right" data-type="image" data-effect="fade"><img src="https://picsum.photos/399" alt="" class="img-fluid"></a>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="image-wrap mb-4">
+                    <a href="https://www.youtube-nocookie.com/embed/pF37tPGkWio" class="glightbox" data-title="My title" data-description="description here" data-desc-position="right" data-type="video" data-effect="fade"><img src="https://picsum.photos/398" alt="" class="img-fluid"></a>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="image-wrap mb-4">
+                    <a href="https://picsum.photos/397" class="glightbox" data-title="My title" data-description="description here" data-type="image" data-effect="fade"><img src="https://picsum.photos/397" alt="" class="img-fluid"></a>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="image-wrap mb-4">
+                    <a href="https://picsum.photos/396" class="glightbox" data-title="My title" data-description="description here" data-desc-position="right" data-type="image" data-effect="fade"><img src="https://picsum.photos/396" alt="" class="img-fluid"></a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
         </div>
         <div class="gallery section" v-if="place.slug == 'aliwen-cementerio'">
           <div class="title"></div>
@@ -43,12 +96,14 @@
     </div>
     <div class="right-side no-slug" v-else>
       <div class="expand" @click="expand()"></div>
-      <div class="body">
+      <div class="body-main">
         <div class="place-list">
-          <h4>Lugares</h4>
+          <h4 class="title-places">Lugares</h4>
           <div class="place" v-for="p in data">
             <RouterLink :to="'/'+p.slug" class="title" :key="p.slug" @click="goTo(p.slug)">
-            {{ p.name }}
+            <div class="name">{{ p.name }}</div>
+            <div class="slug"> {{  p.slug }}</div>
+            <div class="latlng"> <b>Coordenadas:</b> {{ p.lat }} - {{ p.lng }}</div>
             </RouterLink>
           </div>
         </div>
@@ -67,12 +122,19 @@ import { useDataStore } from '@/stores/data';
 import { useRoute } from 'vue-router';
 import FsLightbox from "fslightbox-vue/v3";
 import axios from 'axios';
+import GLightbox from 'glightbox';
+import 'glightbox/dist/css/glightbox.min.css';
+import { onMounted } from 'vue';
+
+import CoolLightBox from 'vue-cool-lightbox'
+import 'vue-cool-lightbox/dist/vue-cool-lightbox.min.css'
 
 export default {
   name: 'MainView',
   components: {
     LeafletMap,
-    FsLightbox
+    FsLightbox,
+    CoolLightBox,
   },
   props: {
     slug: {
@@ -88,16 +150,6 @@ export default {
     const route = useRoute();
     const slug = ref(route.params.slug)
 
-    if(data.value.length == 0){
-      axios.get('https://admin.ruta.cesuct.cl/api/places.php')
-      .then(response => {
-        updateData(response.data);
-      })
-      .catch(error => {
-        console.log(error);
-      });
-    }
-
     let place = ref({});
     let prevPlace = ref({});
     let nextPlace = ref({});
@@ -110,6 +162,10 @@ export default {
 
     prevPlace.value = prevIndex >= 0 ? data.value[prevIndex] : null;
     nextPlace.value = nextIndex < data.value.length ? data.value[nextIndex] : null;
+
+    onMounted(() => {
+      GLightbox({ selector: '.glightbox' });
+    });
 
    
     return {
@@ -124,6 +180,27 @@ export default {
   },
   data() {
     return {
+      index: null,
+      items: [
+        {
+          title: 'In nature, nothing is perfect and everything is perfect',
+          description: "Photo by Lucas",
+          thumb: 'https://cosmos-images2.imgix.net/file/spina/photo/20565/191010_nature.jpg?ixlib=rails-2.1.4&auto=format&ch=Width%2CDPR&fit=max&w=835',
+          src: 'https://www.youtube.com/watch?v=d0tU18Ybcvk',
+        },
+        {
+          title: 'A beautiful mountain view',
+          description: "Photo by Facundo",
+          src: 'https://vimeo.com/43338103',
+          thumb: 'https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/nature-quotes-1557340276.jpg?crop=0.666xw:1.00xh;0.168xw,0&resize=640:*',
+        },
+        {
+          title: 'In nature, nothing is perfect and everything is perfect',
+          description: "Photo by Lucas",
+          thumb: 'https://scx1.b-cdn.net/csz/news/800/2019/1-nature.jpg',
+          src: '/video.mp4',
+        },
+      ],
       toggler: false,
       toggler2: false,
       images: [
@@ -145,6 +222,7 @@ export default {
   created() {
     console.log(this.$route.params.slug)
     this.$watch('$route.params.slug', (slug) => {
+      console.log('changedd sluggg::::;')
       this.place = this.data.find((place) => place.slug === slug);
       let index = this.data.findIndex((element) => element.slug === slug);
 
@@ -193,6 +271,22 @@ export default {
 
 <style>
 
+.image-wrap{
+  height:250px;
+}
+.image-wrap img{
+  transition:all ease 0.4s;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  cursor:zoom-in;
+}
+
+.image-wrap img:hover{
+    transform:scale(0.99);
+}
+
+
 .audios{
   display: flex;
 }
@@ -225,19 +319,68 @@ main {
   display: none;
 }
 
+.right-side .body-main{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  padding: 20px;
+}
+
+.right-side .title-places{
+  font-size: 21px;
+  font-weight: bold;
+  margin: 20px 2px;
+}
 .right-side .place-list{
   display: flex;
   flex-direction: column;
   height: 100%;
+  width: 100%;
 }
 
 .right-side .place-list .place {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 50px;
+  justify-content: flex-start;
+  align-items: flex-start;
   cursor: pointer;
-  border-bottom: 1px solid #eaeaea;
+  border: 1px solid #eaeaea;
+  margin-top: 20px;
+  padding: 10px;
+  width: 100%;
+}
+
+.right-side .place-list .place:hover{
+  background-color: #f5f5f5;
+  border: 1px solid #eaeaea;
+}
+
+.right-side .place-list .place a{
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  text-decoration: none;
+  color: black;
+}
+
+.right-side .place-list .place .name{
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.right-side .place-list .place .slug{
+  font-size: 14px;
+  font-weight: normal;
+}
+
+.right-side .place-list .place .latlng{
+  font-size: 12px;
+  font-weight: normal;
 }
 
 .no-slug{

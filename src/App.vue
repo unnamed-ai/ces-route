@@ -16,14 +16,6 @@ export default {
   setup() {
     const dataStore = useDataStore();
     const { updateData } = dataStore;
-    
-    axios.get('https://admin.ruta.cesuct.cl/api/places.php')
-    .then(response => {
-      updateData(response.data);
-    })
-    .catch(error => {
-      console.log(error);
-    });
     return{
       updateData
     }
