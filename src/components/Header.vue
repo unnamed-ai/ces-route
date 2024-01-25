@@ -1,7 +1,10 @@
 <template>
     <header class="py-3">
       <div>
-        <img :src="logo" alt="Vue logo" class="logo"/>
+        <RouterLink to="/">
+          <img :src="logo" alt="Vue logo" class="logo"/>
+        </RouterLink>
+       
       </div>
     </header>
 </template>
@@ -9,6 +12,7 @@
 <script>
 import { ref } from 'vue';
 import logo from '@/assets/logo-white.png';
+import { RouterLink } from 'vue-router';
 
 export default {
   name: 'Header',

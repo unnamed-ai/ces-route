@@ -1,4 +1,5 @@
 import './assets/main.css'
+import 'glightbox/dist/css/glightbox.min.css';
 
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'

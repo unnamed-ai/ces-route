@@ -116,7 +116,8 @@
 
 import LeafletMap from '../components/LeafletMap.vue';
 
-import { ref } from 'vue';
+
+import { ref, nextTick } from 'vue';
 import { storeToRefs } from 'pinia'
 import { useDataStore } from '@/stores/data';
 import { useRoute } from 'vue-router';
@@ -124,17 +125,14 @@ import FsLightbox from "fslightbox-vue/v3";
 import axios from 'axios';
 import GLightbox from 'glightbox';
 import 'glightbox/dist/css/glightbox.min.css';
-import { onMounted } from 'vue';
 
-import CoolLightBox from 'vue-cool-lightbox'
-import 'vue-cool-lightbox/dist/vue-cool-lightbox.min.css'
+import { onMounted } from 'vue';
 
 export default {
   name: 'MainView',
   components: {
     LeafletMap,
     FsLightbox,
-    CoolLightBox,
   },
   props: {
     slug: {
@@ -162,10 +160,6 @@ export default {
 
     prevPlace.value = prevIndex >= 0 ? data.value[prevIndex] : null;
     nextPlace.value = nextIndex < data.value.length ? data.value[nextIndex] : null;
-
-    onMounted(() => {
-      GLightbox({ selector: '.glightbox' });
-    });
 
    
     return {
@@ -223,16 +217,23 @@ export default {
     console.log(this.$route.params.slug)
     this.$watch('$route.params.slug', (slug) => {
       console.log('changedd sluggg::::;')
-      this.place = this.data.find((place) => place.slug === slug);
-      let index = this.data.findIndex((element) => element.slug === slug);
+      if(!slug){
+        this.place = null;
+        document.title = "Mapa de la Memoria";
+      }else{
+        this.place = this.data.find((place) => place.slug === slug);
+        let index = this.data.findIndex((element) => element.slug === slug);
 
-      let prevIndex = index - 1;
-      let nextIndex = index + 1;
+        let prevIndex = index - 1;
+        let nextIndex = index + 1;
 
-      this.prevPlace = prevIndex >= 0 ? this.data[prevIndex] : null;
-      this.nextPlace = nextIndex < this.data.length ? this.data[nextIndex] : null;
+        this.prevPlace = prevIndex >= 0 ? this.data[prevIndex] : null;
+        this.nextPlace = nextIndex < this.data.length ? this.data[nextIndex] : null;
 
-      document.title = "Mapa de la Memoria | "+this.place.name;
+        document.title = "Mapa de la Memoria | "+this.place.name;
+        this.createLigthbox();
+      }
+      
 
     });
     this.$watch(
@@ -246,10 +247,37 @@ export default {
 
         this.prevPlace = prevIndex >= 0 ? this.data[prevIndex] : null;
         this.nextPlace = nextIndex < this.data.length ? this.data[nextIndex] : null;
+        this.createLigthbox();
       }
     );
   },
   methods: {
+    createLigthbox() {
+      nextTick(() => {
+        const lightbox = GLightbox({
+          touchNavigation: true,
+          loop: true,
+          autoplayVideos: true,
+          onOpen: () => {
+            console.log('Lightbox opened')
+          },
+          beforeSlideLoad: (slide, data) => {
+            // Need to execute a script in the slide?
+            // You can do that here...
+          },
+          onSlideLoad: (slide, data) => {
+            // Need to execute a script in the slide?
+            // You can do that here...
+          },
+          onSlideChange: (slide, data) => {
+            console.log(slide, data)
+          },
+          onSlideClose: () => {
+            console.log('Lightbox closed')
+          }
+        });
+      })
+    },
     goTo(slug) {
       this.$router.push(slug);
     },

@@ -52,9 +52,13 @@
       };
     },
     created(){
-      this.$watch('$route.params.slug', (slug) => {
-        let place = this.data.find((place) => place.slug === slug);
-        this.map.flyTo(new L.LatLng(place.lat, place.lng), 18);
+      this.$watch('$route.params.slug', (slug) => {       
+        if(slug === ''){
+          this.map.flyTo(new L.LatLng(-38.7404074,-72.6253507), 13);
+        }else{
+          let place = this.data.find((place) => place.slug === slug);
+          this.map.flyTo(new L.LatLng(place.lat, place.lng), 18);
+        }
       });
       this.$watch('data', (data) => {
         var LeafIcon = L.Icon.extend({
